@@ -1,17 +1,15 @@
 package com.lazaretov;
 
 import com.codeborne.pdftest.PDF;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.xlstest.XLS;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lazaretov.model.Post;
 import com.opencsv.CSVReader;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +19,6 @@ import java.util.zip.ZipInputStream;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.xlstest.XLS.containsText;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelenideFileTests {
@@ -45,7 +42,7 @@ public class SelenideFileTests {
     @Test
     void zipTest() throws Exception {
         ZipFile zf = new ZipFile(new File("src/test/resources/Desktop.zip"));
-        try(ZipInputStream zis = new ZipInputStream(cl.getResourceAsStream("Desktop.zip"))) {
+        try(ZipInputStream zis = new ZipInputStream(Objects.requireNonNull(cl.getResourceAsStream("Desktop.zip")))) {
             ZipEntry entry; //Следующий файл в архиве
             while ((entry = zis.getNextEntry()) != null) {
                 if (entry.getName().contains("price.xlsx")) {
@@ -76,6 +73,20 @@ public class SelenideFileTests {
                 }
             }
         }
+    }
+
+    @DisplayName("Проверка содержания JSON")
+    @Test
+    void jsonTest() throws Exception {
+        InputStream is = cl.getResourceAsStream("json.json");
+        ObjectMapper objectMapper = new ObjectMapper();
+        Post post = objectMapper.readValue(new InputStreamReader(is), Post.class);
+        assertThat(post.id).isEqualTo(1);
+        assertThat(post.title).isEqualTo("His mother had always taught him");
+        assertThat(post.body).isEqualTo("His mother had always taught him not to ever think of himself as better than others.");
+        assertThat(post.userId).isEqualTo(9);
+        assertThat(post.tags.get(0)).isEqualTo("history");
+        assertThat(post.reactions).isEqualTo(2);
     }
 
 }
