@@ -11,9 +11,14 @@ repositories {
 
 dependencies {
     testImplementation (
-            'org.junit.jupiter:junit-jupiter:5.9.0',
-            'com.codeborne:selenide:6.9.0',
-            'org.assertj:assertj-core:3.23.1'
+            'org.junit.jupiter:junit-jupiter:5.8.2',
+            'com.codeborne:selenide:6.8.1',
+            'org.assertj:assertj-core:3.23.1',
+            'com.codeborne:pdf-test:1.6.0',
+            'com.codeborne:xls-test:1.4.3',
+            'com.opencsv:opencsv:5.7.0',
+            'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+
     )
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
